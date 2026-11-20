@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>skeinmap demo</title>
+    <link rel="icon" href="data:," />
+    <meta name="description" content="A synthetic graph of up to a million elements drawn with skeinmap." />
+  </head>
+  <body>
+    <main class="app">
+      <aside class="panel" aria-label="Controls">
+        <header class="panel-head">
+          <h1>skeinmap</h1>
+          <span class="head-actions">
+            <button id="fit" type="button" class="ghost" title="Fit the whole graph in view">Fit</button>
+            <button id="theme" type="button" class="ghost" title="Switch light / dark">Theme</button>
+          </span>
+        </header>
+        <p class="hint">
+          Synthetic data: nodes clustered around made-up cities, local links and a long-range backbone. Drag to pan,
+          scroll to zoom, hover for details, click a node to select it, shift-drag to select a box. In the standalone
+          view, arrow keys pan, + and - zoom, 0 fits.
+        </p>
+
+        <fieldset>
+          <legend>Elements (nodes + edges)</legend>
+          <div class="seg" role="radiogroup">
+            <label><input type="radio" name="size" value="10000" />10k</label>
+            <label><input type="radio" name="size" value="100000" checked />100k</label>
+            <label><input type="radio" name="size" value="1000000" />1M</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Adapter</legend>
+          <div class="seg" role="radiogroup">
+            <label><input type="radio" name="adapter" value="standalone" checked />Standalone</label>
+            <label><input type="radio" name="adapter" value="leaflet" />Leaflet</label>
+            <label><input type="radio" name="adapter" value="maplibre" />MapLibre</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Renderer</legend>
+          <div class="seg" role="radiogroup">
+            <label><input type="radio" name="renderer" value="auto" checked />Auto</label>
+            <label><input type="radio" name="renderer" value="webgl" />WebGL2</label>
+            <label><input type="radio" name="renderer" value="canvas" />Canvas 2D</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Kernels</legend>
+          <div class="seg" role="radiogroup">
+            <label><input type="radio" name="kernels" value="auto" checked />WASM</label>
+            <label><input type="radio" name="kernels" value="ts" />TypeScript</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="checks">
+          <legend>Display</legend>
+          <label><input type="checkbox" id="labels" checked />Labels</label>
+          <label><input type="checkbox" id="hide-minor" />Hide minor nodes (filter)</label>
+          <label><input type="checkbox" id="degree-colour" />Colour by degree</label>
+          <label><input type="checkbox" id="arrows" />Arrows on the backbone</label>
+          <label><input type="checkbox" id="clusters" />Clusters</label>
+          <label><input type="checkbox" id="world-copies" />World copies</label>
+          <label><input type="checkbox" id="worker" />Level of detail in a worker</label>
+          <button id="import" type="button" class="ghost import">Import GeoJSON</button>
+        </fieldset>
+
+        <section class="stats" aria-label="Statistics">
+          <h2>Stats</h2>
+          <dl id="stats"></dl>
+        </section>
+
+        <section class="selection" aria-label="Selection">
+          <h2>Selection</h2>
+          <p id="selection">Nothing selected.</p>
+          <div class="selection-actions">
+            <button id="clear" type="button" class="ghost">Clear</button>
+          </div>
+        </section>
+      </aside>
+      <div id="stage" class="stage"></div>
+      <div id="busy" class="busy" hidden>Building scene…</div>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

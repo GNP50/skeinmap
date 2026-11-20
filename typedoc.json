@@ -1,0 +1,39 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/index.ts",
+    "src/leaflet/index.ts",
+    "src/maplibre/index.ts",
+    "src/react/index.tsx",
+    "src/lod-worker.ts"
+  ],
+  "tsconfig": "tsconfig.json",
+  "out": "docs/api",
+  "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme", "./docs/.vitepress/typedoc-module-names.mjs"],
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "hideGenerator": true,
+  "hidePageHeader": true,
+  "hideBreadcrumbs": true,
+  "docsRoot": "./docs",
+  "sidebar": {
+    "autoConfiguration": true,
+    "format": "vitepress",
+    "pretty": true,
+    "collapsed": true
+  },
+  "useCodeBlocks": true,
+  "parametersFormat": "table",
+  "interfacePropertiesFormat": "table",
+  "classPropertiesFormat": "table",
+  "typeDeclarationFormat": "table",
+  "enumMembersFormat": "table",
+  "expandObjects": false,
+  "sanitizeComments": true,
+  "validation": {
+    "invalidLink": true,
+    "notExported": false
+  },
+  "disableSources": true
+}

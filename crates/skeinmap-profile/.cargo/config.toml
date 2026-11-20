@@ -1,0 +1,4 @@
+# SSE4.1 gives `floor` a single instruction, as `f64.floor` is in WebAssembly; without it
+# every floor is a libm call and the native profile would overstate the cell computations.
+[build]
+rustflags = ["-C", "target-cpu=x86-64-v2"]

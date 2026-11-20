@@ -1,0 +1,20 @@
+# Native profiling harness for the skeinmap-wasm kernels (not part of the workspace, never
+# published). It compiles the kernel modules of ../skeinmap-wasm/src directly, with the
+# `phase!` markers turned into spanscope spans. See README.md.
+[package]
+name = "skeinmap-profile"
+version = "0.0.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[workspace]
+
+[dependencies]
+spanscope = { git = "https://github.com/GNP50/spanscope", rev = "3b8507fa", features = ["enabled"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+debug = 1

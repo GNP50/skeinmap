@@ -1,0 +1,172 @@
+{
+  "name": "skeinmap",
+  "version": "0.1.0",
+  "description": "Draw and interact with very large node\u2013link graphs on one canvas: WebGL2 or Canvas 2D, WebAssembly hot paths with a pure TypeScript fallback, adapters for Leaflet, MapLibre GL and React.",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "keywords": [
+    "graph",
+    "network",
+    "map",
+    "canvas",
+    "webgl",
+    "webassembly",
+    "leaflet",
+    "maplibre",
+    "react",
+    "visualization",
+    "large-graph"
+  ],
+  "sideEffects": [
+    "*.css",
+    "./dist/lod-worker.js",
+    "./dist/lod-worker.cjs"
+  ],
+  "imports": {
+    "#wasm-source": "./src/wasm/source.ts"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./leaflet": {
+      "import": {
+        "types": "./dist/leaflet.d.ts",
+        "default": "./dist/leaflet.js"
+      },
+      "require": {
+        "types": "./dist/leaflet.d.cts",
+        "default": "./dist/leaflet.cjs"
+      }
+    },
+    "./maplibre": {
+      "import": {
+        "types": "./dist/maplibre.d.ts",
+        "default": "./dist/maplibre.js"
+      },
+      "require": {
+        "types": "./dist/maplibre.d.cts",
+        "default": "./dist/maplibre.cjs"
+      }
+    },
+    "./react": {
+      "import": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "require": {
+        "types": "./dist/react.d.cts",
+        "default": "./dist/react.cjs"
+      }
+    },
+    "./lod-worker": {
+      "import": {
+        "types": "./dist/lod-worker.d.ts",
+        "default": "./dist/lod-worker.js"
+      },
+      "require": {
+        "types": "./dist/lod-worker.d.cts",
+        "default": "./dist/lod-worker.cjs"
+      }
+    },
+    "./style.css": "./dist/style.css",
+    "./wasm": "./dist/skeinmap_wasm_bg.wasm",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
+  ],
+  "scripts": {
+    "build:wasm": "node scripts/build-wasm.mjs",
+    "build": "node scripts/build-wasm.mjs --if-stale && node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsup && node scripts/copy-assets.mjs",
+    "prepare": "npm run build",
+    "dev:demo": "vite examples/demo",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "node scripts/build-wasm.mjs --if-stale && tsc --noEmit && tsc --noEmit -p examples/demo",
+    "test": "node scripts/build-wasm.mjs --if-stale && vitest run",
+    "test:watch": "vitest",
+    "test:rust": "cargo test --manifest-path crates/skeinmap-wasm/Cargo.toml",
+    "bench": "node scripts/build-wasm.mjs --if-stale && node bench/run.mjs",
+    "size": "size-limit",
+    "check:package": "publint && attw --pack . --profile node16 --exclude-entrypoints style.css wasm",
+    "docs:api": "typedoc",
+    "docs:dev": "npm run docs:api && vitepress dev docs",
+    "docs:build": "npm run docs:api && node scripts/build-demo.mjs && vitepress build docs",
+    "smoke": "bash scripts/smoke-tarball.sh",
+    "changeset": "changeset",
+    "release": "npm run build && changeset publish",
+    "release:metadata": "npm pkg set repository.type=git \"repository.url=git+https://github.com/$GITHUB_REPOSITORY.git\" \"homepage=https://github.com/$GITHUB_REPOSITORY#readme\" \"bugs.url=https://github.com/$GITHUB_REPOSITORY/issues\"",
+    "bench:compare": "npm run build && cd bench/compare && npm ci && npm run bench"
+  },
+  "peerDependencies": {
+    "leaflet": "^1.9.0",
+    "maplibre-gl": ">=4.0.0",
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "leaflet": {
+      "optional": true
+    },
+    "maplibre-gl": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@changesets/cli": "^3.0.3",
+    "@eslint/js": "^10.0.1",
+    "@size-limit/esbuild": "^14.3.0",
+    "@size-limit/file": "^14.3.0",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "binaryen": "^132.0.0",
+    "eslint": "^10.15.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "jsdom": "^31.0.1",
+    "leaflet": "^1.9.4",
+    "maplibre-gl": "^6.18.0",
+    "prettier": "^3.10.1",
+    "publint": "^0.3.25",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "size-limit": "^14.3.0",
+    "tinybench": "^6.2.3",
+    "tsup": "^9.0.0",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-markdown": "^4.14.1",
+    "typedoc-vitepress-theme": "^1.1.4",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.2",
+    "vite": "^8.3.8",
+    "vitepress": "^1.6.4",
+    "vitest": "^5.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acme/skeinmap.git"
+  },
+  "homepage": "https://github.com/acme/skeinmap#readme",
+  "bugs": {
+    "url": "https://github.com/acme/skeinmap/issues"
+  }
+}

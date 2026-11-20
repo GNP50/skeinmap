@@ -1,0 +1,39 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    ignore:
+      # typedoc 0.28 supports TypeScript up to 6.0; move to 7 once typedoc does.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+    commit-message:
+      prefix: deps
+
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      # wasm-bindgen is pinned to the exact version of the wasm-bindgen-cli used by the
+      # build (scripts/build-wasm.mjs, CI); bump both together by hand.
+      - dependency-name: wasm-bindgen
+    commit-message:
+      prefix: deps
+
+  - package-ecosystem: github-actions
+    # The composite action in .github/actions/setup pins actions too.
+    directories: [/, /.github/actions/*]
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ['*']
+    commit-message:
+      prefix: ci

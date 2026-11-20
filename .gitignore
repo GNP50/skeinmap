@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+target/
+src/wasm/pkg/
+docs/api/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+docs/public/demo/
+bench/results/
+*.tgz
+.DS_Store
+*.log
+.env
+.env.*
+Cargo.lock

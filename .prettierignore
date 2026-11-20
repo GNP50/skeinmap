@@ -1,0 +1,19 @@
+# Build output and caches
+dist/
+coverage/
+target/
+node_modules/
+src/wasm/pkg/
+docs/api/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+docs/public/demo/
+bench/results/
+bench/compare/results/
+*.tgz
+
+# Files owned by tools
+package-lock.json
+Cargo.lock
+CHANGELOG.md
+*.wasm

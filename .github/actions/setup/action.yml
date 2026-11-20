@@ -1,0 +1,57 @@
+name: Set up the toolchain
+description: >-
+  Node.js (with the npm cache), Rust stable with the wasm32 target, wasm-bindgen-cli at the
+  version the crate pins, and the npm dependencies. Everything that builds the WebAssembly
+  kernels needs all of it, because src/wasm/pkg/ is built, not committed.
+
+inputs:
+  node-version:
+    description: Node.js version. Empty means the version in .nvmrc.
+    required: false
+    default: ''
+  registry-url:
+    description: npm registry to write into .npmrc (for publishing). Empty leaves .npmrc alone.
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: ${{ inputs.node-version }}
+        node-version-file: ${{ inputs.node-version == '' && '.nvmrc' || '' }}
+        cache: npm
+        registry-url: ${{ inputs.registry-url }}
+
+    - name: Set up Rust stable with the wasm32 target
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: wasm32-unknown-unknown
+
+    - name: Cache Cargo registry and target directory
+      uses: Swatinem/rust-cache@v2
+
+    - name: Cache wasm-bindgen-cli
+      id: wasm-bindgen-cache
+      uses: actions/cache@v6
+      with:
+        path: |
+          ~/.cargo/bin/wasm-bindgen
+          ~/.cargo/bin/wasm-bindgen-test-runner
+          ~/.cargo/bin/wasm2es6js
+        key: wasm-bindgen-cli-0.2.100-${{ runner.os }}-${{ runner.arch }}
+
+    - name: Install wasm-bindgen-cli 0.2.100
+      shell: bash
+      run: |
+        if command -v wasm-bindgen >/dev/null 2>&1 && wasm-bindgen --version | grep -q ' 0\.2\.100'; then
+          wasm-bindgen --version
+        else
+          cargo install wasm-bindgen-cli --version 0.2.100 --locked --force
+        fi
+
+    - name: Install npm dependencies
+      shell: bash
+      run: npm ci
