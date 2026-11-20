@@ -1,0 +1,11 @@
+[workspace]
+members = ["crates/skeinmap-wasm"]
+# Native spanscope harness with its own lockfile; see crates/skeinmap-profile/README.md.
+exclude = ["crates/skeinmap-profile"]
+resolver = "2"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"

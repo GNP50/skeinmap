@@ -1,0 +1,39 @@
+[
+  {
+    "name": "core (ESM, createGraphLayer + SceneBuilder)",
+    "path": "dist/index.js",
+    "import": "{ createGraphLayer, SceneBuilder }",
+    "limit": "19.5 kB"
+  },
+  {
+    "name": "skeinmap/leaflet (ESM)",
+    "path": "dist/leaflet.js",
+    "ignore": ["leaflet", "maplibre-gl", "react", "react/jsx-runtime"],
+    "limit": "20 kB"
+  },
+  {
+    "name": "skeinmap/maplibre (ESM)",
+    "path": "dist/maplibre.js",
+    "ignore": ["leaflet", "maplibre-gl", "react", "react/jsx-runtime"],
+    "limit": "19.5 kB"
+  },
+  {
+    "name": "skeinmap/react (ESM)",
+    "path": "dist/react.js",
+    "ignore": ["leaflet", "maplibre-gl", "react", "react/jsx-runtime"],
+    "limit": "21.5 kB"
+  },
+  {
+    "name": "WebAssembly kernels (.wasm, raw)",
+    "path": "dist/skeinmap_wasm_bg.wasm",
+    "disablePlugins": ["@size-limit/esbuild"],
+    "brotli": false,
+    "limit": "65 kB"
+  },
+  {
+    "name": "WebAssembly kernels (.wasm, brotli)",
+    "path": "dist/skeinmap_wasm_bg.wasm",
+    "disablePlugins": ["@size-limit/esbuild"],
+    "limit": "25.5 kB"
+  }
+]

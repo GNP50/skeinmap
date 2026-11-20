@@ -1,0 +1,81 @@
+name: Package
+
+# Builds the npm tarball (`npm pack`) and keeps it as a workflow artifact.
+# A pushed tag `v*` also attaches the tarball to a GitHub Release for that tag, so it can be
+# installed with `npm install https://github.com/<owner>/<repo>/releases/download/vX.Y.Z/<file>.tgz`.
+# Nothing is published to npm.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  pack:
+    name: Build the package tarball
+    runs-on: ubuntu-latest
+    outputs:
+      tarball: ${{ steps.pack.outputs.tarball }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+      - name: Check that the tag matches package.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
+      - name: Pack (the prepare script builds the package)
+        id: pack
+        run: |
+          mkdir -p packages
+          npm pack --pack-destination packages
+          tarball="$(cd packages && ls -- *.tgz)"
+          echo "tarball=$tarball" >> "$GITHUB_OUTPUT"
+          echo "Packed \`$tarball\`" >> "$GITHUB_STEP_SUMMARY"
+      - name: Package checks (publint, are-the-types-wrong)
+        run: npm run check:package
+      - name: Upload the tarball
+        uses: actions/upload-artifact@v7
+        with:
+          name: npm-package
+          path: packages/*.tgz
+          if-no-files-found: error
+          retention-days: 30
+
+  github-release:
+    name: Attach the tarball to the GitHub Release
+    needs: pack
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: npm-package
+          path: packages
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" packages/*.tgz --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" packages/*.tgz --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
+          fi

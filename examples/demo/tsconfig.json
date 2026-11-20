@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["node", "vite/client"],
+    "paths": {
+      "skeinmap": ["../../src/index.ts"],
+      "skeinmap/leaflet": ["../../src/leaflet/index.ts"],
+      "skeinmap/maplibre": ["../../src/maplibre/index.ts"],
+      "skeinmap/react": ["../../src/react/index.tsx"],
+      "#wasm-source": ["../../src/wasm/source.ts"]
+    }
+  },
+  "include": ["*.ts"]
+}
